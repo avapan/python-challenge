@@ -1,56 +1,57 @@
-#In this challenge, you are tasked with creating a Python script for analyzing the financial records of your company. 
-# You will give a set of financial data called budget_data.csv. The dataset is composed of two columns: Date and Profit/Losses.
-#  (Thankfully, your company has rather lax standards for accounting so the records are simple.)
-
-#total number of months included in the dataset
-#The average change in "Profit/Losses" between months over the entire period
-#The greatest increase in profits (date and amount) over the entire period
-#The greatest decrease in losses (date and amount) over the entire period
-#In addition, your final script should both print the analysis to the terminal and export a text file with the results.
+# Dependencies
 import csv
-import os
+# Files to load and output (Remember to change these)
+file_input =  "budget_data.csv"
+file_output = "budget_analysis.txt"
 
-file_path =("budget-data.csv")
+# Track various revenue parameters
 
-months = []
-profit_losses = []
+total_months = 0
+total_revenue = 0
+pre_revenue = 0
+month_of_change = []
+revenue_change_list = []
+biggest_decr = ['', 99999999999]
+biggest_incr = ['', 0]
 
-with open(file_path, 'r') as csvfile:
-    csvread = csv.reader(csvfile)
-    
-    next(csvread, None)
+with open(file_input,newline="") as csvfile:  
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        #Count the total of months
+        total_months += 1
+        #Calculate the total revenue over the entire period
+        total_revenue += int(row['Profit/Losses'])
 
-    for row in csvread:
-        months.append(row[0])
-        profit_losses.append(int(row[1]))
+        #Calulate the average change in revenue between months over the entire period
+        rev_change = int(row['Profit/Losses'])- pre_revenue
+        pre_revenue = int(row['Profit/Losses'])
+        revenue_change_list = revenue_change_list + [rev_change]
+        month_of_change = month_of_change + [row['Date']]
+        #The greatest increase in revenue (date and amount) over the entire period
+        if rev_change>biggest_incr[1]:
+            biggest_incr[0] = row['Date']
+            biggest_incr[1]= rev_change
+        #The greatest decrease in revenue (date and amount) over the entire period
+        if rev_change<biggest_decr[1]:
+            biggest_decr[0] = row['Date']
+            biggest_decr[1]= rev_change
 
-total_months = len(months)
+rev_avg = sum(revenue_change_list)/len(revenue_change_list)
 
-greatest_inc = profit_losses[0]
-greatest_dec = profit_losses[0]
-total_profit_losses = 0
 
-for r in range(len(profit-losses)):
-    if profit_losses[r] >= greatest_inc:
-        greatest_inc = profit_losses[r]
-        greatest_inc_month = months[r]
-    elif profit_losses[r] <= greatest_dec:
-        greatest_dec = profit_losses[r]
-        greatest_dec_month = months[r]
-    total_profit_losses += profit_losses[r]
+print("Average Change in Revenue: $ " + str(rev_avg))
+print("Total Months: " + str(total_months))
+print("Total Revenue: $ " + str(total_revenue))
+print(biggest_incr)
+print(biggest_decr)
 
-average_change = round(total_profit_losses/total_months, 2)
 
-output_path = os.path.join('PyBank','pybank_output' + '.txt')
 
-with open(output_path, 'w') as writefile:
-    writefile.writelines('Financial Analysis\n')
-    writefile.writelines('----------------------------' + '\n')
-    writefile.writelines('Total Months: ' + str(total_months) + '\n')
-    writefile.writelines('Total Profit_Losses: $' + str(total_profit_losses) + '\n')
-    writefile.writelines('Average Revenue Change: $' + str(average_change) + '\n')
-    writefile.writelines('Greatest Increase in Revenue: ' + greatest_inc_month + ' ($' + str(greatest_inc) + ')'+ '\n')
-    writefile.writelines('Greatest Decrease in Revenue: ' + greatest_dec_month + ' ($' + str(greatest_dec) + ')')
-
-with open(output_path, 'r') as readfile:
-    print(readfile.read())
+with open(file_output, 'w') as file:
+    file.write("Financial Analysis\n")
+    file.write("---------------------\n")
+    file.write("Total Months: %d\n" % total_months)
+    file.write("Total Revenue: $%d\n" % total_revenue)
+    file.write("Average Revenue Change $%d\n" % rev_avg)
+    file.write("Greatest Increase in Revenue: %s ($%s)\n" % (biggest_incr[0], biggest_incr[1]))
+    file.write("Greatest Decrease in Revenue: %s ($%s)\n" % (biggest_decr[0], biggest_decr[1]))
