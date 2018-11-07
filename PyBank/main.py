@@ -13,8 +13,8 @@ biggest_decr = ['', 99999999999]
 biggest_incr = ['', 0]
 
 with open(file_input,newline="") as csvfile:  
-    reader = csv.DictReader(csvfile)
-    for row in reader:
+    csvreader = csv.DictReader(csvfile)
+    for row in csvreader:
         
         total_months += 1
         

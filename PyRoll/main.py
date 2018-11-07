@@ -1,45 +1,66 @@
 import csv
 
-
 file_input =  "election_data.csv"
 file_output = "election_analysis.txt"
 
-total_votes = 0
-candidates = {}
-candidates_percent = {}
-winner_count = 0
-winner = ""
+candidates = []
+num_votes = 0
+vote_counts = []
 
+with open(file_input,newline="") as csvfile:
+    csvreader = csv.reader(csvfile)
 
-with open(file_input, newline = "") as csvfile:
-    csvreader = csv.reader(csvfile, delimiter = ",")
-    next(csvreader, None)
-    for row in csvreader:
+    line = next(csvreader,None)
+
+    for line in csvreader:
+
+    
+        num_votes = num_votes + 1
+
+    
+        candidate = line[2]
+
+    
+        if candidate in candidates:
+            candidate_index = candidates.index(candidate)
+            vote_counts[candidate_index] = vote_counts[candidate_index] + 1
         
-        total_votes += 1
-        
-        if row[2] in candidates.keys():
-            candidates[row[2]] += 1
         else:
-            candidates[row[2]] = 1
+            candidates.append(candidate)
+            vote_counts.append(1)
 
-     
-        for key,Value in candidates.items():
-            candidates_percent[key] = round((value/total_votes) * 100, 1)
+percentages = []
+max_votes = vote_counts[0]
+max_index = 0
 
-        for key in candidates.keys():
-          if candidates[key] > winner_count
-        winner = candidates[winner_count]
+for count in range(len(candidates)):
+    vote_percentage = vote_counts[count]/num_votes*100
+    percentages.append(vote_percentage)
+    if vote_counts[count] > max_votes:
+        max_votes = vote_counts[count]
+        print(max_votes)
+        max_index = count
+winner = candidates[max_index]
 
+#print results
+print("Election Results")
+print("--------------------------")
+print(f"Total Votes: {num_votes}")
+for count in range(len(candidates)):
+    print(f"{candidates[count]}: {percentages[count]}% ({vote_counts[count]})")
+print("---------------------------")
+print(f"Winner: {winner}")
+print("---------------------------")
 
+write_file = f"election_analysis.txt"
 
-with open(file_output, 'w') as file:
-    file.write("Election Results \n")
-    file.write("------------------------------------- \n")
-    file.write("Total Votes: " + str(total_votes) + "\n")
-    file.write("------------------------------------- \n")
-    for key, value in candidates.items():
-    file.write(key + ": " + str(candidates_percent[key]) + "% (" + str(value) + ") \n")
-    file.write("------------------------------------- \n")
-    file.write("Winner: " + winner + "\n")
-    file.write("------------------------------------- \n")
+filewriter = open(write_file, mode = 'w')
+
+filewriter.write("Election Results\n")
+filewriter.write("--------------------------\n")
+filewriter.write(f"Total Votes: {num_votes}\n")
+for count in range(len(candidates)):
+    filewriter.write(f"{candidates[count]}: {percentages[count]}% ({vote_counts[count]})\n")
+filewriter.write("---------------------------\n")
+filewriter.write(f"Winner: {winner}\n")
+filewriter.write("---------------------------\n")
