@@ -1,10 +1,8 @@
-# Dependencies
+
 import csv
-# Files to load and output (Remember to change these)
+
 file_input =  "budget_data.csv"
 file_output = "budget_analysis.txt"
-
-# Track various revenue parameters
 
 total_months = 0
 total_revenue = 0
@@ -17,21 +15,21 @@ biggest_incr = ['', 0]
 with open(file_input,newline="") as csvfile:  
     reader = csv.DictReader(csvfile)
     for row in reader:
-        #Count the total of months
+        
         total_months += 1
-        #Calculate the total revenue over the entire period
+        
         total_revenue += int(row['Profit/Losses'])
 
-        #Calulate the average change in revenue between months over the entire period
+       
         rev_change = int(row['Profit/Losses'])- pre_revenue
         pre_revenue = int(row['Profit/Losses'])
         revenue_change_list = revenue_change_list + [rev_change]
         month_of_change = month_of_change + [row['Date']]
-        #The greatest increase in revenue (date and amount) over the entire period
+        
         if rev_change>biggest_incr[1]:
             biggest_incr[0] = row['Date']
             biggest_incr[1]= rev_change
-        #The greatest decrease in revenue (date and amount) over the entire period
+        
         if rev_change<biggest_decr[1]:
             biggest_decr[0] = row['Date']
             biggest_decr[1]= rev_change
